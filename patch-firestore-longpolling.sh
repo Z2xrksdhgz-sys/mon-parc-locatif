@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+cd ~/Documents/mon-parc-locatif
+
+cat > lib/firebase-client.ts << 'ENDOFFILE'
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore'
@@ -17,3 +22,12 @@ export const db = initializeFirestore(app, {
   experimentalAutoDetectLongPolling: true,
   cacheSizeBytes: CACHE_SIZE_UNLIMITED,
 })
+ENDOFFILE
+echo "✅ lib/firebase-client.ts (long-polling activé)"
+
+git add .
+git commit -m "fix: Firestore long-polling pour réseau local"
+git push
+
+echo ""
+echo "✅ Patch appliqué ! Lance : npm run dev"
