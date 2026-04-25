@@ -1,16 +1,14 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-})
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400','500','600','700'] })
 
 export const metadata: Metadata = {
   title: 'Mon Parc Locatif — Gérez votre patrimoine locatif simplement',
-  description:
-    'Loyers, quittances, locataires, documents, incidents — pilotez votre parc locatif depuis un espace unique. À partir de 5,90 €/mois.',
+  description: 'Loyers, quittances, locataires, documents, incidents — pilotez votre parc locatif depuis un espace unique. À partir de 6,90 €/mois.',
   metadataBase: new URL('https://mon-parc-locatif.fr'),
   openGraph: {
     title: 'Mon Parc Locatif',
@@ -22,14 +20,14 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body className={jakarta.className}>{children}</body>
+      <body className={`${jakarta.className} flex flex-col min-h-screen bg-white`}>
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
     </html>
   )
 }
