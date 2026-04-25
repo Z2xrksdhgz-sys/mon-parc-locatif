@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { stripe, PLANS, PlanId } from '@/lib/stripe'
-import { getAdminDb } from '@/lib/firebase-admin'
+import { getAdminAuth, getAdminDb } from '@/lib/firebase-admin'
 
 export async function POST(req: Request) {
   try {
@@ -13,12 +13,22 @@ export async function POST(req: Request) {
     const plan = PLANS[planId]
     if (!plan) return NextResponse.json({ error: 'Plan invalide' }, { status: 400 })
 
-    const db = getAdminDb()
-    const userSnap = await db.collection('mpl_users').doc(uid).get()
-    const userData = userSnap.data()
-
     const priceId = billing === 'annual' ? plan.annual : plan.monthly
     const baseUrl = process.env.NEXT_PUBLIC_URL
+
+    let customerEmail: string | undefined
+    try {
+      const userRecord = await getAdminAuth().getUser(uid)
+      customerEmail = userRecord.email ?? undefined
+    } catch {}
+
+    try {
+      const db = getAdminDb()
+      await db.collection('mpl_users').doc(uid).set(
+        { plan: planId, billing },
+        { merge: true }
+      )
+    } catch {}
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
@@ -28,7 +38,7 @@ export async function POST(req: Request) {
         trial_period_days: 14,
         metadata: { uid, planId, billing },
       },
-      customer_email: userData?.email,
+      customer_email: customerEmail,
       metadata: { uid, planId, billing },
       success_url: `${baseUrl}/dashboard?checkout=success&plan=${planId}`,
       cancel_url: `${baseUrl}/inscription/plan`,
@@ -37,6 +47,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: session.url })
   } catch (err: any) {
+    console.error('Checkout error:', err)
     return NextResponse.json({ error: err.message }, { status: 500 })
   }
 }
