@@ -8,6 +8,7 @@ import { useAuth } from '@/app/providers'
 
 const NAV = [
   { label: 'Tableau de bord', href: '/dashboard', icon: '🏠', section: 'Gérer' },
+  { label: 'Mon profil', href: '/dashboard/mon-profil', icon: '🙍', section: 'Gérer' },
   { label: 'Mon parc locatif', href: '/dashboard/parc-locatif', icon: '🏢', section: 'Gérer' },
   { label: 'Profils bailleurs', href: '/dashboard/profils-bailleurs', icon: '👤', section: 'Gérer' },
   { label: 'Mes locataires', href: '/dashboard/locataires', icon: '👥', section: 'Gérer' },

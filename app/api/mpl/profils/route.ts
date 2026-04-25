@@ -11,13 +11,16 @@ export async function GET() {
     const db = getAdminDb()
     const snap = await db.collection('mpl_profils')
       .where('ownerId', '==', uid)
-      .orderBy('createdAt', 'desc')
       .get()
 
-    const profils = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+    const profils = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a: any, b: any) => (b.createdAt || '').localeCompare(a.createdAt || ''))
+
     return NextResponse.json({ profils })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error('GET profils error:', err)
+    return NextResponse.json({ error: err.message, code: err.code }, { status: 500 })
   }
 }
 
@@ -28,14 +31,19 @@ export async function POST(req: Request) {
     if (!uid) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
 
     const body = await req.json()
-    const { type, nom, siret, adresse, codePostal, ville } = body
+    const {
+      type, nom, siret, adresse, codePostal, ville,
+      regimeFiscalChoisi,
+      indivisaires,
+      autofillFromProfile,
+    } = body
 
     if (!type || !nom || !adresse || !codePostal || !ville) {
       return NextResponse.json({ error: 'Champs obligatoires manquants' }, { status: 400 })
     }
 
-    // Régime fiscal automatique
-    const regimeFiscal: Record<string, string> = {
+    // Régime fiscal : auto ou choisi
+    const regimeAuto: Record<string, string> = {
       'nom-propre': 'revenus-fonciers',
       'indivision': 'revenus-fonciers',
       'sci': 'is',
@@ -43,6 +51,7 @@ export async function POST(req: Request) {
       'lmnp-lmp': 'bic',
       'autre': 'is',
     }
+    const regimeFiscal = regimeFiscalChoisi || regimeAuto[type] || 'revenus-fonciers'
 
     const db = getAdminDb()
     const ref = await db.collection('mpl_profils').add({
@@ -53,13 +62,16 @@ export async function POST(req: Request) {
       adresse,
       codePostal,
       ville,
-      regimeFiscal: regimeFiscal[type] || 'revenus-fonciers',
+      regimeFiscal,
+      indivisaires: indivisaires || [],
+      autofillFromProfile: autofillFromProfile || false,
       nbLocations: 0,
       createdAt: new Date().toISOString(),
     })
 
     return NextResponse.json({ id: ref.id, ok: true })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error('POST profils error:', err)
+    return NextResponse.json({ error: err.message, code: err.code }, { status: 500 })
   }
 }
