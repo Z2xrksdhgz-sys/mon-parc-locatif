@@ -17,7 +17,7 @@ export default function ContactPage() {
         </div>
       </section>
       <section className="py-16 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 sm:gap-12">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Envoyer un message</h2>
             <form className="space-y-5">
