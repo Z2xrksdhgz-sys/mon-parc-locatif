@@ -1,3 +1,52 @@
+#!/bin/bash
+set -e
+cd ~/Documents/mon-parc-locatif
+
+# Fix package.json script dev
+node -e "
+const fs = require('fs');
+const p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+p.scripts.dev = 'next dev';
+fs.writeFileSync('package.json', JSON.stringify(p, null, 2));
+console.log('✅ package.json: script dev corrigé');
+"
+
+# Fix session route (sans Firestore Admin)
+mkdir -p app/api/auth/session
+cat > app/api/auth/session/route.ts << 'ENDOFFILE'
+import { NextResponse } from 'next/server'
+import { getAdminAuth } from '@/lib/firebase-admin'
+
+export async function POST(req: Request) {
+  try {
+    const { token } = await req.json()
+    const decoded = await getAdminAuth().verifyIdToken(token)
+    const uid = decoded.uid
+    const res = NextResponse.json({ ok: true, uid })
+    res.cookies.set('mpl-session', uid, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30,
+      path: '/',
+    })
+    return res
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 401 })
+  }
+}
+
+export async function DELETE() {
+  const res = NextResponse.json({ ok: true })
+  res.cookies.delete('mpl-session')
+  return res
+}
+ENDOFFILE
+echo "✅ api/auth/session/route.ts"
+
+# Fix inscription page (client SDK Firestore, pas Admin)
+mkdir -p "app/(public)/inscription"
+cat > "app/(public)/inscription/page.tsx" << 'ENDOFFILE'
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -145,3 +194,14 @@ export default function InscriptionPage() {
     </div>
   )
 }
+ENDOFFILE
+echo "✅ app/(public)/inscription/page.tsx"
+
+# Git
+git add .
+git commit -m "fix: inscription client SDK + session sans Admin Firestore + script dev"
+git push
+
+echo ""
+echo "✅ Patch appliqué ! Lance : npm run dev"
+echo "Teste sur http://localhost:3000/inscription"

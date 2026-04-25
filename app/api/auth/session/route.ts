@@ -6,7 +6,6 @@ export async function POST(req: Request) {
     const { token } = await req.json()
     const decoded = await getAdminAuth().verifyIdToken(token)
     const uid = decoded.uid
-
     const res = NextResponse.json({ ok: true, uid })
     res.cookies.set('mpl-session', uid, {
       httpOnly: true,
