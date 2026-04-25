@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+setup-dashboard.sh
+setup-stripe-prices.mjs
+.env.local
