@@ -24,22 +24,21 @@ export default function Page() {
         <div className="max-w-6xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-700 text-xs font-semibold px-3.5 py-1.5 rounded-full mb-8 uppercase tracking-wide">
             <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-            Gestion locative — Bailleurs autonomes
+            Pour les propriétaires qui gèrent eux-mêmes
           </div>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.05] mb-6 max-w-4xl">
-            Gérez votre parc locatif,{' '}
-            <span className="text-orange-600">simplement.</span>
+          Vous louez un bien ?<br />
+          <span className="text-orange-600">Gérez-le sans galère.</span>
           </h1>
           <p className="text-xl text-gray-500 leading-relaxed mb-10 max-w-2xl font-normal">
-            Loyers, quittances, locataires, documents, incidents — tout ce dont un bailleur autonome a besoin pour piloter son patrimoine sans gestionnaire externe.
-          </p>
+          Suivez vos loyers, générez vos quittances, gérez vos locataires et vos documents — le tout depuis un seul endroit. Que vous ayez 1 ou 50 biens, sans agence et sans comptable.          </p>
           <div className="flex flex-wrap items-center gap-4 mb-16">
             <Link href="/inscription" className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold px-7 py-4 rounded-xl text-base transition-colors shadow-lg shadow-orange-200">
-              Démarrer — 6,90 €/mois
+            Essayer — à partir de 6,90 €/mois
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5l4 3.5-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </Link>
             <Link href="/fonctionnalites" className="text-gray-500 hover:text-gray-900 font-medium text-base transition-colors">
-              Voir toutes les fonctionnalités →
+            Voir comment ça marche →
             </Link>
           </div>
           <div className="flex flex-wrap gap-10 pt-8 border-t border-gray-100">
@@ -53,8 +52,8 @@ export default function Page() {
       <div className="bg-orange-600 py-10 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <p className="text-white text-xl font-bold mb-1">1 espace. Tous vos biens. Zéro complexité.</p>
-            <p className="text-orange-100 text-sm">Tableau de bord, loyers, quittances, locataires, documents — tout au même endroit.</p>
+            <p className="text-white text-xl font-bold mb-1">Loyers, quittances, relances, documents - tout en un.</p>
+            <p className="text-orange-100 text-sm">Plus besoin de jongler entre Excel, email et papier. Tout est centralisé, automatisé, accessible depuis votre téléphone.</p>
           </div>
           <Link href="/tarifs" className="flex-shrink-0 inline-flex items-center gap-2 bg-white text-orange-700 hover:bg-orange-50 font-semibold px-6 py-3 rounded-xl transition-colors text-sm">
             Voir les tarifs
